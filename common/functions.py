@@ -1,5 +1,8 @@
 import numpy as np
 
+def identity_function(x): # 恒等関数
+    return x
+
 # シグモイド関数(活性化関数)
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -30,7 +33,7 @@ def sigmoid(x):
 
 # ソフトマックス関数
 def softmax(x):
-    if x.ndim == 2:
+    if x.ndim == 2: # バッチで二次元の時
         x = x.T
         x = x - np.max(x, axis=0)
         y = np.exp(x) / np.sum(np.exp(x), axis=0)
