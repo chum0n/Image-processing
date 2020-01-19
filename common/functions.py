@@ -41,3 +41,18 @@ def softmax(x):
 
     x = x - np.max(x) # オーバーフロー対策
     return np.exp(x) / np.sum(np.exp(x))
+
+# バッチ対応版クロスエントロピー誤差
+def cross_entropy_error(y, t):
+    # 一枚に対してのとき
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+
+    # # 教師データがone-hot-vectorの場合、正解ラベルのインデックスに変換
+    # if t.size == y.size:
+    #     t = t.argmax(axis=1)
+
+    batch_size = y.shape[0]
+    # return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+    return -np.sum(t * np.log(y + 1e-7)) / batch_size
