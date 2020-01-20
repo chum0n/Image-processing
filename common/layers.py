@@ -1,5 +1,5 @@
 import numpy as np
-from functions import *
+from common.functions import *
 
 class Sigmoid:
     def __init__(self):
