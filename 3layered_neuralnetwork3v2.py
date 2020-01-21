@@ -3,18 +3,20 @@ from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
 from LayerNetFor3 import LayerNet
+from common.optimizer import *
 
 INNODES = 784
 HNODES = 100
 ONODES = 10
-
-network = LayerNet(INNODES, HNODES, ONODES)
 
 ITER_NUM = 40000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 LEARNING_LATE = 0.01
 ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
+
+network = LayerNet(INNODES, HNODES, ONODES)
+optimizer = SGD(lr = LEARNING_LATE)
 
 train_loss_list = []
 train_acc_list = []
@@ -31,11 +33,10 @@ for i in range(ITER_NUM):
     onehot_t_batch = np.eye(10)[t_batch] # (100, 10) 変換元が10種類の場合は、10×10の単位行列を作ってインデックスに変換元の値をいれる
 
     # 誤差逆伝播法によって勾配を求める
-    grad = network.gradient(x_batch, onehot_t_batch)
+    grads = network.gradient(x_batch, onehot_t_batch)
 
     # 更新
-    for key in ('W1', 'b1', 'W2', 'b2'):
-        network.params[key] -= LEARNING_LATE * grad[key]
+    optimizer.update(network.params, grads)
 
     loss = network.loss(x_batch, onehot_t_batch)
     train_loss_list.append(loss)
