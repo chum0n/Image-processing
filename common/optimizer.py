@@ -1,8 +1,7 @@
 import numpy as np
 
+# 確率的勾配降下法
 class SGD:
-
-    """確率的勾配降下法（Stochastic Gradient Descent）"""
 
     def __init__(self, lr=0.01):
         self.lr = lr
@@ -11,9 +10,8 @@ class SGD:
         for key in params.keys():
             params[key] -= self.lr * grads[key]
 
+# 慣性項付きSGD(Momentum)
 class Momentum:
-
-    """Momentum SGD"""
 
     def __init__(self, lr=0.01, momentum=0.9):
         self.lr = lr
@@ -32,9 +30,8 @@ class Momentum:
             self.v[key] = self.momentum*self.v[key] - self.lr*grads[key]
             params[key] += self.v[key]
 
+# AdaGrad
 class AdaGrad:
-
-    """AdaGrad"""
 
     def __init__(self, lr=0.01):
         self.lr = lr
@@ -50,9 +47,53 @@ class AdaGrad:
             self.h[key] += grads[key] * grads[key]
             params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7) # 0で割ってしまうことを防ぐ
 
-class Adam:
+# RMSProp
+class RMSprop:
 
-    """Adam (http://arxiv.org/abs/1412.6980v8)"""
+    def __init__(self, lr=0.001, decay_rate = 0.9):
+        self.lr = lr
+        self.decay_rate = decay_rate
+        self.h = None
+
+    def update(self, params, grads):
+        if self.h is None:
+            self.h = {}
+            for key, val in params.items():
+                self.h[key] = np.zeros_like(val)
+
+        for key in params.keys():
+            self.h[key] *= self.decay_rate
+            self.h[key] += (1 - self.decay_rate) * grads[key] * grads[key]
+            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
+
+# AdaDelta
+class AdaDelta:
+
+    def __init__(self, decay_rate = 0.95):
+        self.decay_rate = decay_rate
+        self.h = None
+        self.s = None
+
+    def update(self, params, grads):
+        if self.h is None:
+            self.h = {}
+            for key, val in params.items():
+                self.h[key] = np.zeros_like(val)
+        if self.s is None:
+            self.s = {}
+            for key, val in params.items():
+                self.s[key] = np.zeros_like(val)
+
+        for key in params.keys():
+            self.h[key] *= self.decay_rate
+            self.h[key] += (1 - self.decay_rate) * grads[key] * grads[key]
+            v = -(np.sqrt(self.s[key] + 1e-6)) / (np.sqrt(self.h[key] + 1e-6)) * grads[key]
+            self.s[key] *= self.decay_rate
+            self.s[key] += (1 - self.decay_rate) * v * v
+            params[key] += v
+
+# Adam
+class Adam:
 
     def __init__(self, lr=0.001, beta1=0.9, beta2=0.999):
         self.lr = lr

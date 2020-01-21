@@ -87,6 +87,7 @@ class SoftmaxWithLoss:
 
         return dx
 
+# Dropout
 class Dropout:
     def __init__(self, dropout_ratio=0.5):
         self.dropout_ratio = dropout_ratio
@@ -104,10 +105,8 @@ class Dropout:
     def backward(self, dout): # ReLUと同じ
         return dout * self.mask
 
+# BatchNormalization
 class BatchNormalization:
-    """
-    http://arxiv.org/abs/1502.03167
-    """
     def __init__(self, gamma, beta, momentum=0.9, running_mean=None, running_var=None):
         self.gamma = gamma
         self.beta = beta
