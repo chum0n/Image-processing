@@ -21,7 +21,7 @@ optimizer = SGD(lr = LEARNING_LATE)
 train_loss_list = []
 train_acc_list = []
 
-mndata = MNIST("/Users/daisuke/le4nn/")
+mndata = MNIST("/Users/daisuke/le4nn/mnist")
 x_train, t_train = mndata.load_training()
 x_train = np.array(x_train) # (60000, 784)
 t_train = np.array(t_train) # (60000,)
