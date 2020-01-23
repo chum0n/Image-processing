@@ -7,7 +7,6 @@ from common.functions import sigmoid, softmax
 INNODES = 784
 HNODES = 100
 ONODES = 10
-PIC_NUM = 10000
 
 # 前処理
 def init_network():
@@ -36,7 +35,9 @@ def forward(network, x):
 
     return y
 
-mndata = MNIST("/Users/daisuke/le4nn/")
+network = init_network()
+
+mndata = MNIST("/Users/daisuke/le4nn/mnist")
 x_test, t_test = mndata.load_testing()
 x_test = np.array(x_test)
 t_test = np.array(t_test)
@@ -44,6 +45,5 @@ t_test = np.array(t_test)
 print("0~9999までの整数を入力してください")
 idx = int(input())
 x = x_test[idx]
-network = init_network()
 y = forward(network, x)
 print("一番確率が高いのは", np.argmax(y))
