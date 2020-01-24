@@ -200,10 +200,10 @@ class Convolution:
         self.pad = pad
 
         # 中間データ（backward時に使用）
-        self.x = None   
+        self.x = None
         self.col = None
         self.col_W = None
-        
+
         # 重み・バイアスパラメータの勾配
         self.dW = None
         self.db = None
@@ -221,7 +221,7 @@ class Convolution:
         # フィルターによって都合のいいように入力データを展開
         col = im2col(x, FH, FW, self.stride, self.pad)
         # フィルターの展開
-        col_W = self.W.reshape(FN, -1).T # -1指定で前要素数/FNの形にしてくれる
+        col_W = self.W.reshape(FN, -1).T # -1指定で全要素数/FNの形にしてくれる
         out = np.dot(col, col_W) + self.b
 
         # transpose関数は多次元配列の軸の順番を入れ替える関数
@@ -249,7 +249,7 @@ class Convolution:
 
 # プーリング層
 class Pooling:
-    def __init__(self, pool_h, pool_w, stride=1, pad=0):
+    def __init__(self, pool_h, pool_w, stride, pad=0):
         self.pool_h = pool_h
         self.pool_w = pool_w
         self.stride = stride
@@ -259,6 +259,7 @@ class Pooling:
         self.arg_max = None
 
     def forward(self, x):
+        # 入ってくるデータのバッチ数、チャンネル、高さ、幅
         N, C, H, W = x.shape
         # 出ていくデータの高さ
         out_h = int(1 + (H - self.pool_h) / self.stride)
