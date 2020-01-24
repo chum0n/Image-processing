@@ -9,14 +9,13 @@ INNODES = 784
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 50000 # 勾配法による更新の回数
+ITER_NUM = 18000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
-DECAY_LATE = 0.95
 ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 
 network = LayerNet(INNODES, HNODES, ONODES)
-optimizer = AdaDelta(DECAY_LATE)
+optimizer = AdaDelta()
 
 train_loss_list = []
 train_acc_list = []

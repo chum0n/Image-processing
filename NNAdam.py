@@ -9,7 +9,7 @@ INNODES = 784
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 20000 # 勾配法による更新の回数
+ITER_NUM = 18000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 LEARNING_LATE = 0.01

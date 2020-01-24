@@ -9,7 +9,7 @@ INNODES = 784
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 20000 # 勾配法による更新の回数
+ITER_NUM = 18000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 LEARNING_LATE = 0.01
@@ -21,7 +21,7 @@ optimizer = RMSprop(lr = LEARNING_LATE)
 train_loss_list = []
 train_acc_list = []
 
-mndata = MNIST("/Users/daisuke/le4nn/")
+mndata = MNIST("/Users/daisuke/le4nn/mnist")
 x_train, t_train = mndata.load_training()
 x_train = np.array(x_train) # (60000, 784)
 t_train = np.array(t_train) # (60000,)

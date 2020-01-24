@@ -46,9 +46,9 @@ class AdaGrad:
 
 # RMSProp
 class RMSprop:
-    def __init__(self, lr=0.001, decay_rate = 0.9):
+    def __init__(self, lr=0.001, rho = 0.9):
         self.lr = lr
-        self.decay_rate = decay_rate
+        self.rho = rho
         self.h = None
 
     def update(self, params, grads):
@@ -58,14 +58,14 @@ class RMSprop:
                 self.h[key] = np.zeros_like(val)
 
         for key in params.keys():
-            self.h[key] *= self.decay_rate
-            self.h[key] += (1 - self.decay_rate) * grads[key] * grads[key]
-            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
+            self.h[key] *= self.rho
+            self.h[key] += (1 - self.rho) * grads[key] * grads[key]
+            params[key] -= self.lr / (np.sqrt(self.h[key]) + 1e-8) * grads[key]
 
 # AdaDelta
 class AdaDelta:
-    def __init__(self, decay_rate = 0.95):
-        self.decay_rate = decay_rate
+    def __init__(self, rho = 0.95):
+        self.rho = rho
         self.h = None
         self.s = None
 
@@ -74,18 +74,19 @@ class AdaDelta:
             self.h = {}
             for key, val in params.items():
                 self.h[key] = np.zeros_like(val)
+
         if self.s is None:
             self.s = {}
             for key, val in params.items():
                 self.s[key] = np.zeros_like(val)
 
         for key in params.keys():
-            self.h[key] *= self.decay_rate
-            self.h[key] += (1 - self.decay_rate) * grads[key] * grads[key]
-            v = -(np.sqrt(self.s[key] + 1e-6)) / (np.sqrt(self.h[key] + 1e-6)) * grads[key]
-            self.s[key] *= self.decay_rate
-            self.s[key] += (1 - self.decay_rate) * v * v
-            params[key] += v
+            self.h[key] *= self.rho
+            self.h[key] += (1 - self.rho) * grads[key] * grads[key]
+            deltaW = -(np.sqrt(self.s[key] + 1e-6)) / (np.sqrt(self.h[key] + 1e-6)) * grads[key]
+            self.s[key] *= self.rho
+            self.s[key] += (1 - self.rho) * deltaW * deltaW
+            params[key] += deltaW
 
 # Adam
 class Adam:
