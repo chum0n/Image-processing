@@ -92,12 +92,13 @@ class SoftmaxWithLoss:
 
 # Dropout
 class Dropout:
-    def __init__(self, dropout_ratio=0.5):
+    def __init__(self, dropout_ratio=0.5, train_flag=True):
         self.dropout_ratio = dropout_ratio
         self.mask = None
+        self.train_flag = train_flag
 
-    def forward(self, x, train_flg=True):
-        if train_flg:
+    def forward(self, x):
+        if self.train_flag:
             # xと同じ形状の配列をランダムに生成し、その値がdropout_ratioよりも大きい要素だけをTrue
             self.mask = np.random.rand(*x.shape) > self.dropout_ratio
             return x * self.mask # ランダムに無視

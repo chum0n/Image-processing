@@ -23,7 +23,7 @@ class LayerNet:
         self.layers = OrderedDict()
         self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
         self.layers['Sigmoid1'] = Sigmoid()
-        self.layers['Dropout1'] = Dropout()
+        self.layers['Dropout1'] = Dropout() # テストデータに用いるときはtrain_flag分のFalseをいれる
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
 
         self.lastLayer = SoftmaxWithLoss()
