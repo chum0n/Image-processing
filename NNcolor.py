@@ -6,11 +6,11 @@ from LayerNetFor3 import LayerNet
 from common.optimizer import *
 import pickle
 
-INNODES = 784
+INNODES = 3072
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 50000 # 勾配法による更新の回数
+ITER_NUM = 20000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 LEARNING_LATE = 0.01
@@ -19,23 +19,29 @@ ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 network = LayerNet(INNODES, HNODES, ONODES)
 optimizer = SGD(lr = LEARNING_LATE)
 
-def unpickle(file):
-    with open(file, 'rb') as fo:
-        dict = pickle.load(fo,encoding='bytes')
-    X =np.array(dict[b'data'])
-    X =X.reshape((X.shape[0],3,-1))
-    Y =np.array(dict[b'labels'])
-    return X,Y
+def unpickleall():
+    for i in range(5):
+        with open("/Users/daisuke/le4nn/cifar-10-batches-py/data_batch_"+str(i+1), 'rb') as fo:
+            dict = pickle.load(fo, encoding='bytes')
+        file_X = np.array(dict[b'data'])
+        file_X = file_X.reshape((file_X.shape[0], -1))
+        file_X = file_X / 255.0 # 0から1までの範囲にする
+        file_Y = np.array(dict[b'labels'])
+        if i == 0:
+            X = file_X
+            Y = file_Y
+        else:
+            X = np.append(X, file_X, axis=0)
+            Y = np.append(Y, file_Y, axis=0)
+    return X, Y
 
-X,Y = unpickle("/Users/daisuke/le4nn/cifar-10-batches-py/data_batch_1")
-x = np.array(X) # (10000, 3, 32, 32)
-y = np.array(Y) # (10000,)
-print(x.shape)
-print(y.shape)
+X,Y = unpickleall()
+x = np.array(X) # (50000, 3*32*32)
+y = np.array(Y) # (50000,)
 
 for i in range(ITER_NUM):
     ran_num = np.random.choice(x.shape[0], BATCH_SIZE)
-    x_batch = x[ran_num, :] # (100, 784)
+    x_batch = x[ran_num, :] # (100, 3*32*32)
     y_batch = y[ran_num] # (100, )
     onehot_y_batch = np.eye(10)[y_batch] # (100, 10) 変換元が10種類の場合は、10×10の単位行列を作ってインデックスに変換元の値をいれる
 
