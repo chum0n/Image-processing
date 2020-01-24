@@ -51,4 +51,4 @@ t_batch = t_train[ran_num] # (100, )
 pre_y = predict(network, x_batch) # (100, 10)
 onehot_t_batch = np.eye(10)[t_batch] # (100, 10) 変換元が10種類の場合は、10×10の単位行列を作ってインデックスに変換元の値をいれる
 
-print("クロスエントロピー誤差は", cross_entropy_error(pre_y, onehot_t_batch))
+print("cross_entropy_error :", cross_entropy_error(pre_y, onehot_t_batch))

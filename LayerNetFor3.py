@@ -19,7 +19,8 @@ class LayerNet:
         self.params['b2'] = np.random.normal(0, so, (1, ONODES)) # (1, 10)
 
         # レイヤの生成
-        self.layers = OrderedDict() # 順番付きディクショナリ変数
+        # 順番付きディクショナリ変数
+        self.layers = OrderedDict()
         self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
         self.layers['Sigmoid1'] = Sigmoid()
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
@@ -27,17 +28,19 @@ class LayerNet:
         self.lastLayer = SoftmaxWithLoss()
 
     def predict(self, x):
+        # 追加した順にレイヤのforward呼ぶだけでok
         for layer in self.layers.values():
-            x = layer.forward(x) # 追加した順にレイヤのforward呼ぶだけでok
+            x = layer.forward(x)
 
         return x
 
-    # x:入力データ, t:教師データ
-    def loss(self, x, t): # 損失関数の値を求める、xは画像データ,tは正解ラベル
+    # 損失関数の値を求める、xは画像データ,tは正解ラベル
+    def loss(self, x, t):
         y = self.predict(x)
         return self.lastLayer.forward(y, t)
 
-    def accuracy(self, x, t): # 認識精度を求める
+    # 認識精度を求める
+    def accuracy(self, x, t):
         y = self.predict(x)
         y = np.argmax(y, axis=1)
         if t.ndim != 1 : t = np.argmax(t, axis=1)
@@ -45,7 +48,8 @@ class LayerNet:
         accuracy = np.sum(y == t) / float(x.shape[0])
         return accuracy
 
-    def gradient(self, x, t): # 重みパラメータに対する勾配を誤差逆伝播法で求める
+    # 重みパラメータに対する勾配を誤差逆伝播法で求める
+    def gradient(self, x, t):
         # forward
         self.loss(x, t)
 
@@ -58,7 +62,6 @@ class LayerNet:
         for layer in layers:
             dout = layer.backward(dout)
 
-        # 設定
         grads = {}
         grads['W1'], grads['b1'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
         grads['W2'], grads['b2'] = self.layers['Affine2'].dW, self.layers['Affine2'].db

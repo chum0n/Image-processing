@@ -42,8 +42,8 @@ x_test, t_test = mndata.load_testing()
 x_test = np.array(x_test)
 t_test = np.array(t_test)
 
-print("0~9999までの整数を入力してください")
+print("Please enter an integer between 0 and 9999")
 idx = int(input())
 x = x_test[idx]
 y = forward(network, x)
-print("一番確率が高いのは", np.argmax(y))
+print("The most likely is", np.argmax(y))

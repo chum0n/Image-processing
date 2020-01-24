@@ -45,7 +45,7 @@ class Affine:
         self.db = None
 
     def forward(self, x):
-        # # テンソル対応
+        # # テンソルに対応
         # self.original_x_shape = x.shape
         # x = x.reshape(x.shape[0], -1)
         self.x = x
@@ -78,13 +78,8 @@ class SoftmaxWithLoss:
 
     def backward(self, dout=1):
         batch_size = self.t.shape[0]
-        dx = (self.y - self.t) / batch_size # 割ることでデータ１個あたりの誤差が前レイヤへ伝播する
-        # if self.t.size == self.y.size: # 教師データがone-hot-vectorの場合
-        #     dx = (self.y - self.t) / batch_size
-        # else:
-        #     dx = self.y.copy()
-        #     dx[np.arange(batch_size), self.t] -= 1
-        #     dx = dx / batch_size
+        # 割ることでデータ１個あたりの誤差が前レイヤへ伝播する
+        dx = (self.y - self.t) / batch_size
 
         return dx
 

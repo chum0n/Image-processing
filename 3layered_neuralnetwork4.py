@@ -33,19 +33,19 @@ def forward(network, x):
 
     return y
 
-mndata = MNIST("/Users/daisuke/le4nn/")
+mndata = MNIST("/Users/daisuke/le4nn/mnist")
 x_test, t_test = mndata.load_testing()
 x_test = np.array(x_test)
 t_test = np.array(t_test)
 
-print("0~9999までの整数を入力してください")
+print("Please enter an integer between 0 and 9999")
 idx = int(input())
 network = init_network()
 x = x_test[idx]
 y = forward(network, x)
 
-print("結果は",np.argmax(y))
-print("正解は",t_test[idx])
+print("result :",np.argmax(y))
+print("The answer is",t_test[idx])
 
 cor = 0
 for i in range(10000) :
@@ -53,4 +53,4 @@ for i in range(10000) :
     y = forward(network, x)
     if np.argmax(y) == t_test[i] :
         cor += 1
-print("正解率は", cor/10000*100,"%")
+print("test_acc :", cor/10000*100,"%")

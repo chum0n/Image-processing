@@ -2,7 +2,6 @@ import numpy as np
 
 # 確率的勾配降下法
 class SGD:
-
     def __init__(self, lr=0.01):
         self.lr = lr
 
@@ -12,7 +11,6 @@ class SGD:
 
 # 慣性項付きSGD(Momentum)
 class Momentum:
-
     def __init__(self, lr=0.01, momentum=0.9):
         self.lr = lr
         self.momentum = momentum
@@ -32,7 +30,6 @@ class Momentum:
 
 # AdaGrad
 class AdaGrad:
-
     def __init__(self, lr=0.01):
         self.lr = lr
         self.h = None
@@ -49,7 +46,6 @@ class AdaGrad:
 
 # RMSProp
 class RMSprop:
-
     def __init__(self, lr=0.001, decay_rate = 0.9):
         self.lr = lr
         self.decay_rate = decay_rate
@@ -68,7 +64,6 @@ class RMSprop:
 
 # AdaDelta
 class AdaDelta:
-
     def __init__(self, decay_rate = 0.95):
         self.decay_rate = decay_rate
         self.h = None
@@ -94,7 +89,6 @@ class AdaDelta:
 
 # Adam
 class Adam:
-
     def __init__(self, lr=0.001, beta1=0.9, beta2=0.999):
         self.lr = lr
         self.beta1 = beta1
