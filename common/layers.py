@@ -107,7 +107,8 @@ class Dropout:
             return x * (1.0 - self.dropout_ratio) # 無視しない
 
     def backward(self, dout): # ReLUと同じ
-        return dout * self.mask
+        dx = dout * self.mask
+        return dx
 
 # BatchNormalization
 class BatchNormalization:

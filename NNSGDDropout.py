@@ -2,14 +2,14 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
-from LayerNetForA2 import LayerNet
+from LNforDropout import LayerNet
 from common.optimizer import *
 
 INNODES = 784
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 50000 # 勾配法による更新の回数
+ITER_NUM = 18000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 LEARNING_LATE = 0.01
