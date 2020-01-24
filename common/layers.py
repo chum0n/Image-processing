@@ -112,7 +112,7 @@ class Dropout:
 
 # BatchNormalization
 class BatchNormalization:
-    def __init__(self, gamma, beta, momentum=0.9, running_mean=None, running_var=None):
+    def __init__(self, gamma=1, beta=0, momentum=0.9, running_mean=None, running_var=None):
         self.gamma = gamma
         self.beta = beta
         self.momentum = momentum

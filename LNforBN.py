@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 class LayerNet:
 
-    def __init__(self, INNODES, HNODES, ONODES, gamma, beta):
+    def __init__(self, INNODES, HNODES, ONODES):
         # 重みの初期化
         self.params = {}
         # 中間層の間のWとb
@@ -22,7 +22,7 @@ class LayerNet:
         # 順番付きディクショナリ変数
         self.layers = OrderedDict()
         self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
-        self.layers['BatchNormalization1'] = BatchNormalization(gamma, beta)
+        self.layers['BatchNormalization1'] = BatchNormalization()
         self.layers['Sigmoid1'] = Sigmoid()
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
 
