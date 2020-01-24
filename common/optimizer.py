@@ -72,12 +72,9 @@ class AdaDelta:
     def update(self, params, grads):
         if self.h is None:
             self.h = {}
-            for key, val in params.items():
-                self.h[key] = np.zeros_like(val)
-
-        if self.s is None:
             self.s = {}
             for key, val in params.items():
+                self.h[key] = np.zeros_like(val)
                 self.s[key] = np.zeros_like(val)
 
         for key in params.keys():
@@ -90,32 +87,29 @@ class AdaDelta:
 
 # Adam
 class Adam:
-    def __init__(self, lr=0.001, beta1=0.9, beta2=0.999):
-        self.lr = lr
+    def __init__(self, alfa=0.001, beta1=0.9, beta2=0.999):
+        self.alfa = alfa
         self.beta1 = beta1
         self.beta2 = beta2
-        self.iter = 0
+        self.t = None
         self.m = None
         self.v = None
 
     def update(self, params, grads):
-        if self.m is None:
-            self.m, self.v = {}, {}
+        if self.t is None:
+            self.t = 0
+            self.m = {}
+            self.v = {}
             for key, val in params.items():
                 self.m[key] = np.zeros_like(val)
                 self.v[key] = np.zeros_like(val)
 
-        self.iter += 1
-        lr_t  = self.lr * np.sqrt(1.0 - self.beta2**self.iter) / (1.0 - self.beta1**self.iter)         
-
+        self.t += 1
         for key in params.keys():
-            #self.m[key] = self.beta1*self.m[key] + (1-self.beta1)*grads[key]
-            #self.v[key] = self.beta2*self.v[key] + (1-self.beta2)*(grads[key]**2)
-            self.m[key] += (1 - self.beta1) * (grads[key] - self.m[key])
-            self.v[key] += (1 - self.beta2) * (grads[key]**2 - self.v[key])
-
-            params[key] -= lr_t * self.m[key] / (np.sqrt(self.v[key]) + 1e-8)
-
-            #unbias_m += (1 - self.beta1) * (grads[key] - self.m[key]) # correct bias
-            #unbisa_b += (1 - self.beta2) * (grads[key]*grads[key] - self.v[key]) # correct bias
-            #params[key] += self.lr * unbias_m / (np.sqrt(unbisa_b) + 1e-7)
+            self.m[key] *= self.beta1
+            self.m[key] += (1 - self.beta1) * grads[key]
+            self.v[key] *= self.beta2
+            self.v[key] += (1 - self.beta2) * grads[key] * grads[key]
+            m2 = self.m[key] / (1 - np.power(self.beta1, self.t))
+            v2 = self.v[key] / (1 - np.power(self.beta2, self.t))
+            params[key] -= self.alfa * m2 / (np.sqrt(v2) + 1e-8)

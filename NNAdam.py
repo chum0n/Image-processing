@@ -12,11 +12,10 @@ ONODES = 10
 ITER_NUM = 18000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
-LEARNING_LATE = 0.01
 ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 
 network = LayerNet(INNODES, HNODES, ONODES)
-optimizer = Adam(lr = LEARNING_LATE)
+optimizer = Adam()
 
 train_loss_list = []
 train_acc_list = []
