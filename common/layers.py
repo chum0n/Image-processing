@@ -19,17 +19,24 @@ class Sigmoid:
 class Relu:
     def __init__(self):
         self.mask = None
+        self.x = None
 
     def forward(self, x):
-        self.mask = (x <= 0) # mask変数はxの要素が0以下の場所をTrue,それ以外をFalse
-        out = x.copy() # 一旦入ってきたやつをコピー
-        out[self.mask] = 0 # Trueになってるところを0に
+        # self.mask = (x <= 0) # mask変数はxの要素が0以下の場所をTrue,それ以外をFalse
+        # self.x = x
+        # out = x.copy() # 一旦入ってきたやつをコピー
+        # out[self.mask] = 0 # Trueになってるところを0に
+
+        self.x = x
+        out = np.maximum(0, x)
 
         return out
 
     def backward(self, dout):
-        dout[self.mask] = 0 # Trueになってるところを0に
-        dx = dout
+        # dout[self.mask] = 0 # Trueになってるところを0に
+        # dx = dout
+
+        dx = dout * np.where(self.x > 0, 1, 0)
 
         return dx
 
