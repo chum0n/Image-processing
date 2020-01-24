@@ -11,26 +11,26 @@ class SGD:
 
 # 慣性項付きSGD(Momentum)
 class Momentum:
-    def __init__(self, lr=0.01, momentum=0.9):
+    def __init__(self, lr=0.01, alfa=0.9):
         self.lr = lr
-        self.momentum = momentum
-        self.v = None
+        self.alfa = alfa
+        self.deltaW = None
 
     def update(self, params, grads):
         # updateが初めて呼ばれるとき
         # パラメータと同じ構造のデータをディクショナリ変数として保持
-        if self.v is None:
-            self.v = {}
+        if self.deltaW is None:
+            self.deltaW = {}
             for key, val in params.items():
-                self.v[key] = np.zeros_like(val)
+                self.deltaW[key] = np.zeros_like(val)
 
         for key in params.keys():
-            self.v[key] = self.momentum*self.v[key] - self.lr*grads[key]
-            params[key] += self.v[key]
+            self.deltaW[key] = self.alfa * self.deltaW[key] - self.lr * grads[key]
+            params[key] += self.deltaW[key]
 
 # AdaGrad
 class AdaGrad:
-    def __init__(self, lr=0.01):
+    def __init__(self, lr=0.001):
         self.lr = lr
         self.h = None
 
@@ -42,7 +42,7 @@ class AdaGrad:
 
         for key in params.keys():
             self.h[key] += grads[key] * grads[key]
-            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7) # 0で割ってしまうことを防ぐ
+            params[key] -= self.lr / (np.sqrt(self.h[key]) + 1e-8) * grads[key] # 0で割ってしまうことを防ぐ
 
 # RMSProp
 class RMSprop:
