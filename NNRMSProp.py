@@ -39,14 +39,11 @@ for i in range(ITER_NUM):
     optimizer.update(network.params, grads)
 
     loss = network.loss(x_batch, onehot_t_batch)
-    train_loss_list.append(loss)
 
     if i % ITER_PER_EPOC == 0: # エポック終了時
         train_acc = network.accuracy(x_train, t_train)
-        train_acc_list.append(train_acc)
-        # print(train_acc)
-        print("クロスエントロピー誤差は", int(i / ITER_PER_EPOC) + 1, "回目")
-        print(loss)
+
+        print(int(i / ITER_PER_EPOC) + 1, ": train_acc, cross_entropy_error |", train_acc*100, "%,",loss)
 
 np.save('networkWh',network.params['W1'])
 np.save('networkbh',network.params['b1'])

@@ -9,7 +9,7 @@ INNODES = 784
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 20000 # 勾配法による更新の回数
+ITER_NUM = 50000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 DECAY_LATE = 0.95
@@ -21,7 +21,7 @@ optimizer = AdaDelta(DECAY_LATE)
 train_loss_list = []
 train_acc_list = []
 
-mndata = MNIST("/Users/daisuke/le4nn/")
+mndata = MNIST("/Users/daisuke/le4nn/mnist")
 x_train, t_train = mndata.load_training()
 x_train = np.array(x_train) # (60000, 784)
 t_train = np.array(t_train) # (60000,)
@@ -39,14 +39,11 @@ for i in range(ITER_NUM):
     optimizer.update(network.params, grads)
 
     loss = network.loss(x_batch, onehot_t_batch)
-    train_loss_list.append(loss)
 
     if i % ITER_PER_EPOC == 0: # エポック終了時
         train_acc = network.accuracy(x_train, t_train)
-        train_acc_list.append(train_acc)
-        # print(train_acc)
-        print("クロスエントロピー誤差は", int(i / ITER_PER_EPOC) + 1, "回目")
-        print(loss)
+
+        print(int(i / ITER_PER_EPOC) + 1, ": train_acc, cross_entropy_error |", train_acc*100, "%,",loss)
 
 np.save('networkWh',network.params['W1'])
 np.save('networkbh',network.params['b1'])

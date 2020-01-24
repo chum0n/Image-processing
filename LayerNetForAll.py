@@ -2,24 +2,24 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
-from LayerNetFor3 import LayerNet
+from LayerNetForBN import LayerNet
 from common.optimizer import *
 
 INNODES = 784
 HNODES = 100
 ONODES = 10
 
-ITER_NUM = 20000 # 勾配法による更新の回数
+ITER_NUM = 50000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
 LEARNING_LATE = 0.01
 ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 
-network = LayerNet(INNODES, HNODES, ONODES)
-optimizer = Adam(lr = LEARNING_LATE)
+GAMMA = 1
+BETA = 0
 
-train_loss_list = []
-train_acc_list = []
+network = LayerNet(INNODES, HNODES, ONODES, GAMMA, BETA)
+optimizer = SGD(lr = LEARNING_LATE)
 
 mndata = MNIST("/Users/daisuke/le4nn/mnist")
 x_train, t_train = mndata.load_training()
