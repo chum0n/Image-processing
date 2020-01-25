@@ -17,6 +17,9 @@ img_rows, img_cols = 28, 28 # 画像サイズは 28x28
 num_classes = 10 # クラス数
 
 (X, Y), (Xtest, Ytest) = keras.datasets.mnist.load_data() # 訓 練 用 と テスト(兼 validation)用のデータを取得
+# 過学習をわざと起こす
+X = X[:300]
+Y = Y[:300]
 X = X.reshape(X.shape[0],img_rows,img_cols,1) # X を (画 像 ID， 28, 28, 1) の4次元配列に変換
 Xtest = Xtest.reshape(Xtest.shape[0],img_rows,img_cols,1)
 
@@ -41,12 +44,6 @@ model.add(layers.MaxPooling2D(pool_size=(2,2)))
 model.add(layers.Flatten())
 # 全結合層.出力ノード数は128.活性化関数にReLU. 
 model.add(layers.Dense(128,activation='relu'))
-# # Dropout
-# model.add(layers.Dropout(rate=0.5))
-# # 全結合層.出力ノード数は128.活性化関数にReLU. 
-# model.add(layers.Dense(128,activation='relu'))
-# # Dropout
-# model.add(layers.Dropout(rate=0.5))
 # 全結合層.出力ノード数はnum_classes(クラス数).活性化関数にsoftmax.
 model.add(layers.Dense(num_classes, activation='softmax'))
 
@@ -58,7 +55,7 @@ print (model.summary())
 model.compile(
 loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.Adadelta(), metrics=['acc'])
 # 学習.とりあえずここでは 10 エポックだけ学習. 1バッチあたり 32 枚の画像を 利用
-epochs = 15
+epochs = 10
 batch_size = 32
 result = model.fit(X,Y, batch_size=batch_size,
 epochs=epochs, validation_data=(Xtest,Ytest1))
@@ -94,10 +91,10 @@ fig = plt.figure()
 plt.plot(history['loss'], label='loss') # 教師データの損失 
 plt.plot(history['val_loss'], label='val_loss') # テストデータの損失 
 plt.legend()
-plt.savefig("loss_historyB12.png")
+plt.savefig("loss_historyB11.png")
 
 fig = plt.figure()
 plt.plot(history['acc'], label='acc') # 教師データでの精度
 plt.plot(history['val_acc'], label='val_acc') # テストデータでの精度
 plt.legend()
-plt.savefig("loss_accB12.png")
+plt.savefig("loss_accB11.png")
