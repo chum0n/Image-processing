@@ -112,79 +112,57 @@ class Dropout:
 
 # BatchNormalization
 class BatchNormalization:
-    def __init__(self, gamma=1, beta=0, momentum=0.9, running_mean=None, running_var=None):
+    def __init__(self, gamma=1, beta=0, momentum=0.9, train_flag=True):
         self.gamma = gamma
         self.beta = beta
         self.momentum = momentum
-        self.input_shape = None # Conv層の場合は4次元、全結合層の場合は2次元
+        self.train_flag = train_flag
 
-        # テスト時に使用する平均と分散
-        self.running_mean = running_mean
-        self.running_var = running_var
-
-        # backward時に使用する中間データ
         self.batch_size = None
-        self.xc = None
-        self.std = None
+        self.x_miave = None
+        self.stadev = None
         self.dgamma = None
         self.dbeta = None
 
-    def forward(self, x, train_flg=True):
-        self.input_shape = x.shape
-        if x.ndim != 2:
-            N, C, H, W = x.shape
-            x = x.reshape(N, -1)
+        # 移動平均と移動分散
+        self.run_ave = None
+        self.run_var = None
 
-        out = self.__forward(x, train_flg)
+    def forward(self, x):
+        if self.run_ave is None:
+            self.run_ave = np.zeros(x.shape[1])
+            self.run_var = np.zeros(x.shape[1])
 
-        return out.reshape(*self.input_shape)
-
-    def __forward(self, x, train_flg):
-        if self.running_mean is None:
-            N, D = x.shape
-            self.running_mean = np.zeros(D)
-            self.running_var = np.zeros(D)
-
-        if train_flg:
-            mu = x.mean(axis=0)
-            xc = x - mu
-            var = np.mean(xc**2, axis=0)
-            std = np.sqrt(var + 10e-7)
-            xn = xc / std
+        if self.train_flag:
+            ave = x.mean(axis=0)
+            x_miave = x - ave
+            var = np.mean(x_miave*x_miave, axis=0)
+            stadev = np.sqrt(var + 10e-7)
+            x_nor = x_miave / stadev
 
             self.batch_size = x.shape[0]
-            self.xc = xc
-            self.xn = xn
-            self.std = std
-            self.running_mean = self.momentum * self.running_mean + (1-self.momentum) * mu
-            self.running_var = self.momentum * self.running_var + (1-self.momentum) * var            
-        else:
-            xc = x - self.running_mean
-            xn = xc / ((np.sqrt(self.running_var + 10e-7)))
+            self.x_miave = x_miave
+            self.x_nor = x_nor
+            self.stadev = stadev
+            self.run_ave = self.momentum * self.run_ave + (1-self.momentum) * ave
+            self.run_var = self.momentum * self.run_var + (1-self.momentum) * var
 
-        out = self.gamma * xn + self.beta 
+            out = self.gamma * x_nor + self.beta
+
+        else:
+            out = self.gamma * (x - self.run_ave) / np.sqrt(self.run_var + 10e-7) + self.beta
+
         return out
 
+
     def backward(self, dout):
-        if dout.ndim != 2:
-            N, C, H, W = dout.shape
-            dout = dout.reshape(N, -1)
 
-        dx = self.__backward(dout)
-
-        dx = dx.reshape(*self.input_shape)
-        return dx
-
-    def __backward(self, dout):
+        dx_nor = dout * self.gamma
+        dvar = -0.5 * np.sum((dx_nor * self.x_miave) / (self.stadev * self.stadev * self.stadev), axis=0)
+        dave = np.sum(-1 * dx_nor / self.stadev, axis=0) + dvar * -2 * np.sum(self.x_miave, axis=0) / self.batch_size
+        dx = dx_nor / self.stadev + (2.0 / self.batch_size) * self.x_miave * dvar + dave / self.batch_size
+        dgamma = np.sum(dout * self.x_nor, axis=0)
         dbeta = dout.sum(axis=0)
-        dgamma = np.sum(self.xn * dout, axis=0)
-        dxn = self.gamma * dout
-        dxc = dxn / self.std
-        dstd = -np.sum((dxn * self.xc) / (self.std * self.std), axis=0)
-        dvar = 0.5 * dstd / self.std
-        dxc += (2.0 / self.batch_size) * self.xc * dvar
-        dmu = np.sum(dxc, axis=0)
-        dx = dxc - dmu / self.batch_size
 
         self.dgamma = dgamma
         self.dbeta = dbeta
