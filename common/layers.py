@@ -194,9 +194,9 @@ class Convolution:
         # フィルターの個数、チャンネル、高さ、幅
         FN, C, FH, FW = self.W.shape
         # 出ていくデータの高さ
-        out_h = int((H + 2*self.pad - FH) / self.stride + 1)
+        out_h = int((H + 2 * self.pad - FH) / self.stride + 1)
         # 出ていくデータの幅
-        out_w = int((W + 2*self.pad - FW) / self.stride + 1)
+        out_w = int((W + 2 * self.pad - FW) / self.stride + 1)
 
         # フィルターによって都合のいいように入力データを展開
         col = im2col(x, out_h, out_w, FH, FW, self.stride, self.pad)
@@ -215,8 +215,11 @@ class Convolution:
 
     # 逆伝播はほぼAffineと同じ
     def backward(self, dout):
+        # 入ってくるデータのバッチ数、チャンネル、高さ、幅
+        N, C, H, W = self.x.shape
         # フィルターの個数、チャンネル、高さ、幅
         FN, C, FH, FW = self.W.shape
+
         dout = dout.transpose(0,2,3,1)
         dout = dout.reshape(-1, FN)
 
@@ -226,7 +229,11 @@ class Convolution:
         self.dW = self.dW.reshape(FN, C, FH, FW)
 
         dcol = np.dot(dout, self.col_W.T)
-        dx = col2im(dcol, self.x.shape, FH, FW, self.stride, self.pad)
+        # 出ていくデータの高さ
+        out_h = int((H + 2 * self.pad - FH) / self.stride + 1)
+        # 出ていくデータの幅
+        out_w = int((W + 2 * self.pad - FW) / self.stride + 1)
+        dx = col2im(dcol, out_h, out_w, self.x.shape, FH, FW, self.stride, self.pad)
 
         return dx
 
@@ -270,6 +277,8 @@ class Pooling:
 
     # Reluの逆伝播参考
     def backward(self, dout):
+        # 入ってくるデータのバッチ数、チャンネル、高さ、幅
+        N, C, H, W = self.x.shape
         print(dout.shape)
         dout = dout.transpose(0, 2, 3, 1)
         
@@ -279,6 +288,10 @@ class Pooling:
         dmax = dmax.reshape(dout.shape + (pool_size,)) 
         
         dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
-        dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
+        # 出ていくデータの高さ
+        out_h = int((H + 2 * self.pad - self.pool_h) / self.stride + 1)
+        # 出ていくデータの幅
+        out_w = int((W + 2 * self.pad - self.pool_w) / self.stride + 1)
+        dx = col2im(dcol, out_h, out_w, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
         
         return dx

@@ -20,10 +20,8 @@ def im2col(input_data, out_h, out_w, FH, FW, stride, pad):
     col = col.reshape(N * out_h * out_w, -1)
     return col
 
-def col2im(col, input_shape, FH, FW, stride, pad):
+def col2im(col, out_h, out_w, input_shape, FH, FW, stride, pad):
     N, C, H, W = input_shape
-    out_h = (H + 2*pad - FH)//stride + 1
-    out_w = (W + 2*pad - FW)//stride + 1
     col = col.reshape(N, out_h, out_w, C, FH, FW)
     col = col.transpose(0, 3, 4, 5, 1, 2)
 
