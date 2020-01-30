@@ -46,14 +46,15 @@ class Affine:
         self.b = b
 
         self.x = None
-        # self.original_x_shape = None
+        # テンソル対応のために用意
+        self.x_originalshape = None
         # 重み・バイアスパラメータの微分
         self.dW = None
         self.db = None
 
     def forward(self, x):
-        # テンソルに対応
-        self.original_x_shape = x.shape
+        # テンソルに対応する
+        self.x_originalshape = x.shape
         x = x.reshape(x.shape[0], -1)
         self.x = x
 
@@ -66,7 +67,9 @@ class Affine:
         self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
 
-        dx = dx.reshape(*self.original_x_shape)  # 入力データの形状に戻す（テンソル対応）
+        # 入力データの形状に戻す
+        dx = dx.reshape(*self.x_originalshape)
+
         return dx
 
 # softmax関数とクロスエントロピー誤差
@@ -177,16 +180,15 @@ class Convolution:
         self.stride = stride
         self.pad = pad
 
-        # 中間データ（backward時に使用）
-        self.x = None
         self.col = None
         self.col_W = None
-
-        # 重み・バイアスパラメータの勾配
+        self.x = None
         self.dW = None
         self.db = None
 
     def forward(self, x):
+        self.x = x
+
         # フィルターの個数、チャンネル、高さ、幅
         FN, C, FH, FW = self.W.shape
         # 入ってくるデータのバッチ数、チャンネル、高さ、幅
@@ -199,13 +201,13 @@ class Convolution:
         # フィルターによって都合のいいように入力データを展開
         col = im2col(x, FH, FW, self.stride, self.pad)
         # フィルターの展開
-        col_W = self.W.reshape(FN, -1).T # -1指定で全要素数/FNの形にしてくれる
+        col_W = self.W.reshape(FN, -1).T # -1指定で全要素数/FNの形にする
         out = np.dot(col, col_W) + self.b
 
+        out = out.reshape(N, out_h, out_w, -1)
         # transpose関数は多次元配列の軸の順番を入れ替える関数
-        out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
+        out = out.transpose(0, 3, 1, 2)
 
-        self.x = x
         self.col = col
         self.col_W = col_W
 
@@ -214,7 +216,8 @@ class Convolution:
     # 逆伝播はほぼAffineと同じ
     def backward(self, dout):
         FN, C, FH, FW = self.W.shape
-        dout = dout.transpose(0,2,3,1).reshape(-1, FN)
+        dout = dout.transpose(0,2,3,1)
+        dout = dout.reshape(-1, FN)
 
         self.db = np.sum(dout, axis=0)
         self.dW = np.dot(self.col.T, dout)
