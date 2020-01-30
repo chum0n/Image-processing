@@ -6,39 +6,48 @@ class Sigmoid:
     def __init__(self):
         self.out = None
 
-    def forward(self, x): # 順伝播
+    def forward(self, x):
         out = sigmoid(x)
         self.out = out
         return out
 
-    def backward(self, dout): # 逆伝播
+    def backward(self, dout):
         dx = dout * (1.0 - self.out) * self.out
 
         return dx
 
 class Relu:
     def __init__(self):
-        self.mask = None
         self.x = None
 
     def forward(self, x):
-        # self.mask = (x <= 0) # mask変数はxの要素が0以下の場所をTrue,それ以外をFalse
-        # self.x = x
-        # out = x.copy() # 一旦入ってきたやつをコピー
-        # out[self.mask] = 0 # Trueになってるところを0に
-
         self.x = x
         out = np.maximum(0, x)
 
         return out
 
     def backward(self, dout):
-        # dout[self.mask] = 0 # Trueになってるところを0に
-        # dx = dout
-
         dx = dout * np.where(self.x > 0, 1, 0)
 
         return dx
+
+# class Relu:
+#     def __init__(self):
+#         self.mask = None
+
+#     def forward(self, x):
+#         self.mask = (x <= 0) # mask変数はxの要素が0以下の場所をTrue,それ以外をFalse
+#         self.x = x
+#         out = x.copy() # 一旦入ってきたやつをコピー
+#         out[self.mask] = 0 # Trueになってるところを0に
+
+#         return out
+
+#     def backward(self, dout):
+#         dout[self.mask] = 0 # Trueになってるところを0に
+#         dx = dout
+
+#         return dx
 
 class Affine:
     def __init__(self, W, b):
@@ -75,8 +84,8 @@ class Affine:
 # softmax関数とクロスエントロピー誤差
 class SoftmaxWithLoss:
     def __init__(self):
-        self.loss = None # 損失
-        self.y = None # softmaxの出力
+        self.loss = None
+        self.y = None # ソフトマックスの出力
         self.t = None # 教師データ(one-hot vector)
 
     def forward(self, x, t):
@@ -159,7 +168,6 @@ class BatchNormalization:
 
 
     def backward(self, dout):
-
         dx_nor = dout * self.gamma
         dvar = -0.5 * np.sum((dx_nor * self.x_miave) / (self.stadev * self.stadev * self.stadev), axis=0)
         dave = np.sum(-1 * dx_nor / self.stadev, axis=0) + dvar * -2 * np.sum(self.x_miave, axis=0) / self.batch_size
@@ -203,7 +211,6 @@ class Convolution:
         # フィルターの展開
         col_W = self.W.reshape(FN, -1).T # -1指定で全要素数/FNの形にする
         out = np.dot(col, col_W) + self.b
-
         out = out.reshape(N, out_h, out_w, -1)
         # transpose関数は多次元配列の軸の順番を入れ替える関数
         out = out.transpose(0, 3, 1, 2)
