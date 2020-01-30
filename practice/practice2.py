@@ -2,6 +2,9 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
+
+import sys, os
+sys.path.append(os.pardir)
 from common.functions import *
 
 INNODES = 784
