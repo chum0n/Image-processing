@@ -52,9 +52,9 @@ class Affine:
         self.db = None
 
     def forward(self, x):
-        # # テンソルに対応
-        # self.original_x_shape = x.shape
-        # x = x.reshape(x.shape[0], -1)
+        # テンソルに対応
+        self.original_x_shape = x.shape
+        x = x.reshape(x.shape[0], -1)
         self.x = x
 
         out = np.dot(self.x, self.W) + self.b
@@ -66,7 +66,7 @@ class Affine:
         self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
 
-        # dx = dx.reshape(*self.original_x_shape)  # 入力データの形状に戻す（テンソル対応）
+        dx = dx.reshape(*self.original_x_shape)  # 入力データの形状に戻す（テンソル対応）
         return dx
 
 # softmax関数とクロスエントロピー誤差
@@ -259,10 +259,13 @@ class Pooling:
         self.x = x
         self.arg_max = arg_max
 
+        print("outは", out.shape)
+
         return out
 
     # Reluの逆伝播参考
     def backward(self, dout):
+        print(dout.shape)
         dout = dout.transpose(0, 2, 3, 1)
         
         pool_size = self.pool_h * self.pool_w
