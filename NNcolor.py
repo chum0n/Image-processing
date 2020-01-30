@@ -2,7 +2,7 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
-from LayerNetFor3 import LayerNet
+from LN import LayerNet
 from common.optimizer import *
 import pickle
 

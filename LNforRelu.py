@@ -6,22 +6,10 @@ from collections import OrderedDict
 class LayerNet:
 
     def __init__(self, INNODES, HNODES, ONODES):
-        # # 重みの初期化
-        # self.params = {}
-        # # 中間層の間のWとb
-        # sh = np.sqrt(1/784)
-        # np.random.seed(seed=32)
-        # self.params['W1'] = np.random.normal(0, sh, (INNODES, HNODES)) # (784, 100)
-        # self.params['b1'] = np.random.normal(0, sh, (1, HNODES)) # (1, 100)
-        # # 出力層の間のWとb
-        # so = np.sqrt(1/100)
-        # self.params['W2'] = np.random.normal(0, so, (HNODES, ONODES)) # (100, 10)
-        # self.params['b2'] = np.random.normal(0, so, (1, ONODES)) # (1, 10)
-
         # 重みの初期化
         self.params = {}
         # 中間層の間のWとb
-        sh = np.sqrt(2/784)
+        sh = np.sqrt(1/784)
         np.random.seed(seed=32)
         self.params['W1'] = np.random.normal(0, sh, (INNODES, HNODES)) # (784, 100)
         self.params['b1'] = np.random.normal(0, sh, (1, HNODES)) # (1, 100)
@@ -29,6 +17,18 @@ class LayerNet:
         so = np.sqrt(1/100)
         self.params['W2'] = np.random.normal(0, so, (HNODES, ONODES)) # (100, 10)
         self.params['b2'] = np.random.normal(0, so, (1, ONODES)) # (1, 10)
+
+        # # 重みの初期化
+        # self.params = {}
+        # # 中間層の間のWとb
+        # sh = np.sqrt(2/784)
+        # np.random.seed(seed=32)
+        # self.params['W1'] = np.random.normal(0, sh, (INNODES, HNODES)) # (784, 100)
+        # self.params['b1'] = np.random.normal(0, sh, (1, HNODES)) # (1, 100)
+        # # 出力層の間のWとb
+        # so = np.sqrt(1/100)
+        # self.params['W2'] = np.random.normal(0, so, (HNODES, ONODES)) # (100, 10)
+        # self.params['b2'] = np.random.normal(0, so, (1, ONODES)) # (1, 10)
 
         # レイヤの生成
         # 順番付きディクショナリ変数
