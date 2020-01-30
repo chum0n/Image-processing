@@ -174,7 +174,7 @@ class BatchNormalization:
 
 # 畳み込み層
 class Convolution:
-    def __init__(self, W, b, stride=1, pad=0):
+    def __init__(self, W, b, stride, pad):
         self.W = W
         self.b = b
         self.stride = stride
@@ -189,17 +189,17 @@ class Convolution:
     def forward(self, x):
         self.x = x
 
-        # フィルターの個数、チャンネル、高さ、幅
-        FN, C, FH, FW = self.W.shape
         # 入ってくるデータのバッチ数、チャンネル、高さ、幅
         N, C, H, W = x.shape
+        # フィルターの個数、チャンネル、高さ、幅
+        FN, C, FH, FW = self.W.shape
         # 出ていくデータの高さ
-        out_h = int(1 + (H + 2*self.pad - FH) / self.stride)
+        out_h = int((H + 2*self.pad - FH) / self.stride + 1)
         # 出ていくデータの幅
-        out_w = int(1 + (W + 2*self.pad - FW) / self.stride)
+        out_w = int((W + 2*self.pad - FW) / self.stride + 1)
 
         # フィルターによって都合のいいように入力データを展開
-        col = im2col(x, FH, FW, self.stride, self.pad)
+        col = im2col(x, out_h, out_w, FH, FW, self.stride, self.pad)
         # フィルターの展開
         col_W = self.W.reshape(FN, -1).T # -1指定で全要素数/FNの形にする
         out = np.dot(col, col_W) + self.b
@@ -215,13 +215,15 @@ class Convolution:
 
     # 逆伝播はほぼAffineと同じ
     def backward(self, dout):
+        # フィルターの個数、チャンネル、高さ、幅
         FN, C, FH, FW = self.W.shape
         dout = dout.transpose(0,2,3,1)
         dout = dout.reshape(-1, FN)
 
-        self.db = np.sum(dout, axis=0)
+        self.db = np.sum(dout)
         self.dW = np.dot(self.col.T, dout)
-        self.dW = self.dW.transpose(1, 0).reshape(FN, C, FH, FW)
+        self.dW = self.dW.transpose(1, 0)
+        self.dW = self.dW.reshape(FN, C, FH, FW)
 
         dcol = np.dot(dout, self.col_W.T)
         dx = col2im(dcol, self.x.shape, FH, FW, self.stride, self.pad)
@@ -248,7 +250,7 @@ class Pooling:
         out_w = int(1 + (W - self.pool_w) / self.stride)
 
         # 展開
-        col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
+        col = im2col(x, out_h, out_w, self.pool_h, self.pool_w, self.stride, self.pad)
         # チャンネルごとに独立に展開
         col = col.reshape(-1, self.pool_h * self.pool_w)
 
