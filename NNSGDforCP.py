@@ -27,7 +27,7 @@ x_train = x_train.reshape(x_train.shape[0], 1, 28, 28) # (60000, 1*28*28)
 t_train = np.array(t_train) # (60000,)
 
 for i in range(ITER_NUM):
-    print("学習中1")
+    print(i + 1, "回目のエポックです")
     ran_num = np.random.choice(x_train.shape[0], BATCH_SIZE)
     x_batch = x_train[ran_num, :] # (100, 1*28*28)
     t_batch = t_train[ran_num] # (100, )

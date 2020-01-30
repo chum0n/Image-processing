@@ -239,7 +239,7 @@ class Convolution:
 
 # プーリング層
 class Pooling:
-    def __init__(self, pool_h, pool_w, stride, pad=0):
+    def __init__(self, pool_h, pool_w, stride, pad):
         self.pool_h = pool_h
         self.pool_w = pool_w
         self.stride = stride
@@ -256,7 +256,7 @@ class Pooling:
         # 出ていくデータの幅
         out_w = int(1 + (W - self.pool_w) / self.stride)
 
-        # 展開
+        # im2colで展開
         col = im2col(x, out_h, out_w, self.pool_h, self.pool_w, self.stride, self.pad)
         # チャンネルごとに独立に展開
         col = col.reshape(-1, self.pool_h * self.pool_w)
@@ -265,13 +265,11 @@ class Pooling:
         # 行ごと(1次元目の軸ごと)に最大値を求める
         out = np.max(col, axis=1)
 
-        # 整形
+        # 適切な出力サイズに整形する
         out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
 
         self.x = x
         self.arg_max = arg_max
-
-        print("outは", out.shape)
 
         return out
 
@@ -279,19 +277,19 @@ class Pooling:
     def backward(self, dout):
         # 入ってくるデータのバッチ数、チャンネル、高さ、幅
         N, C, H, W = self.x.shape
-        print(dout.shape)
         dout = dout.transpose(0, 2, 3, 1)
-        
+
         pool_size = self.pool_h * self.pool_w
         dmax = np.zeros((dout.size, pool_size))
+        # fllattenメソッドで平坦化
         dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()
-        dmax = dmax.reshape(dout.shape + (pool_size,)) 
-        
+        dmax = dmax.reshape(dout.shape + (pool_size,))
         dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
+
         # 出ていくデータの高さ
         out_h = int((H + 2 * self.pad - self.pool_h) / self.stride + 1)
         # 出ていくデータの幅
         out_w = int((W + 2 * self.pad - self.pool_w) / self.stride + 1)
         dx = col2im(dcol, out_h, out_w, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
-        
+
         return dx

@@ -7,7 +7,7 @@ class LayerNet:
 
     def __init__(self, INNODES_CH, INNODES_H, INNODES_W, HNODES, ONODES, f_num=30, f_h=5, f_w=5, pad=0, stride=1):
 
-        conv_output_size = (INNODES_H - f_h + 2*pad) / stride + 1
+        conv_output_size = (INNODES_H - f_h + 2 * pad) / stride + 1
         pool_output_size = int(f_num * (conv_output_size/2) * (conv_output_size/2))
 
         # 重みの初期化
@@ -31,9 +31,7 @@ class LayerNet:
         self.layers = OrderedDict()
         self.layers['Conv1'] = Convolution(self.params['W1'], self.params['b1'], stride=1, pad=0)
         self.layers['Sigmoid1'] = Sigmoid()
-        self.layers['Pool1'] = Pooling(pool_h=2, pool_w=2, stride=2)
-        print(conv_output_size)
-        print(pool_output_size)
+        self.layers['Pool1'] = Pooling(pool_h=2, pool_w=2, stride=2, pad=0)
         self.layers['Affine1'] = Affine(self.params['W2'], self.params['b2'])
 
         self.lastLayer = SoftmaxWithLoss()

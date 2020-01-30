@@ -27,7 +27,7 @@ def col2im(col, out_h, out_w, input_shape, FH, FW, stride, pad):
 
     img = np.zeros((N, C, H + 2 * pad + stride - 1, W + 2 * pad + stride - 1))
     for y in range(FH):
-        y_max = y + stride*out_h
+        y_max = y + stride * out_h
         for x in range(FW):
             x_max = x + stride*out_w
             img[:, :, y:y_max:stride, x:x_max:stride] += col[:, :, y, x, :, :]
