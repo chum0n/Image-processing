@@ -1,6 +1,6 @@
 import numpy as np
 from mnist import MNIST
-mndata = MNIST("/Users/daisuke/le4nn/mnist")
+mndata = MNIST("../data/mnist")
 # ""の中はtrain-images-idx3-ubyteとtrain-labels-idx1-ubyteを置いたディレクトリ名とすること
 X, Y = mndata.load_training()
 X = np.array(X)

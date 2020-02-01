@@ -41,7 +41,7 @@ def unpickle(file):
     Y =np.array(dict[b'labels'])
     return X,Y
 
-x_test, t_test = unpickle("/Users/daisuke/le4nn/cifar-10-batches-py/test_batch")
+x_test, t_test = unpickle("../data/cifar-10-batches-py/test_batch")
 x_test = np.array(x_test) # (50000, 3*32*32)
 t_test = np.array(t_test) # (50000,)
 

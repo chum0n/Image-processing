@@ -10,7 +10,7 @@ def unpickle(file):
     Y =np.array(dict[b'labels'])
     return X,Y
 
-X,Y = unpickle("/Users/daisuke/le4nn/cifar-10-batches-py/data_batch_1")
+X,Y = unpickle("../data/cifar-10-batches-py/data_batch_1")
 
 import matplotlib.pyplot as plt
 idx = 1000
