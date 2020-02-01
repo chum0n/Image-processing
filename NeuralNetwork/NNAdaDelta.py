@@ -2,34 +2,35 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
-from LNforConv import LayerNet
+
+import sys, os
+sys.path.append(os.pardir)
+from LayerNet.LN import LayerNet
 from common.optimizer import *
 
-INNODES_CH = 1
-INNODES_H = 28
-INNODES_W = 28
+INNODES = 784
 HNODES = 100
 ONODES = 10
 
 ITER_NUM = 18000 # 勾配法による更新の回数
-TEACH_NUM = 100 # 教師データの数
+TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
-LEARNING_LATE = 0.01
 ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 
-network = LayerNet(INNODES_CH, INNODES_H, INNODES_W, HNODES, ONODES)
-optimizer = SGD(lr = LEARNING_LATE)
+network = LayerNet(INNODES, HNODES, ONODES)
+optimizer = AdaDelta()
 
-mndata = MNIST("/Users/daisuke/le4nn/mnist")
+train_loss_list = []
+train_acc_list = []
+
+mndata = MNIST("../data/mnist")
 x_train, t_train = mndata.load_training()
 x_train = np.array(x_train) # (60000, 784)
-x_train = x_train.reshape(x_train.shape[0], 1, 28, 28) # (60000, 1*28*28)
 t_train = np.array(t_train) # (60000,)
 
 for i in range(ITER_NUM):
-    print("学習中1")
     ran_num = np.random.choice(x_train.shape[0], BATCH_SIZE)
-    x_batch = x_train[ran_num, :] # (100, 1*28*28)
+    x_batch = x_train[ran_num, :] # (100, 784)
     t_batch = t_train[ran_num] # (100, )
     onehot_t_batch = np.eye(10)[t_batch] # (100, 10) 変換元が10種類の場合は、10×10の単位行列を作ってインデックスに変換元の値をいれる
 

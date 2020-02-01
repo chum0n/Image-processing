@@ -28,7 +28,7 @@ class LayerNet:
         # レイヤの生成
         # 順番付きディクショナリ変数
         self.layers = OrderedDict()
-        self.layers['Conv1'] = Convolution(self.params['W1'], self.params['b1'])
+        self.layers['Conv1'] = Convolution(self.params['W1'], self.params['b1'], stride=1, pad=0)
         self.layers['Sigmoid1'] = Sigmoid()
         self.layers['Affine1'] = Affine(self.params['W2'], self.params['b2'])
 

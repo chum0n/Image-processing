@@ -40,7 +40,7 @@ def forward(network, x):
 
 network = init_network()
 
-mndata = MNIST("/Users/daisuke/le4nn/mnist")
+mndata = MNIST("../data/mnist")
 x_test, t_test = mndata.load_testing()
 x_test = np.array(x_test)
 t_test = np.array(t_test)

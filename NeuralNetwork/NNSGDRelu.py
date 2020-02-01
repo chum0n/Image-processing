@@ -2,7 +2,10 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
-from LN import LayerNet
+
+import sys, os
+sys.path.append(os.pardir)
+from LayerNet.LNforRelu import LayerNet
 from common.optimizer import *
 
 INNODES = 784
@@ -12,16 +15,13 @@ ONODES = 10
 ITER_NUM = 18000 # 勾配法による更新の回数
 TEACH_NUM = 60000 # 教師データの数
 BATCH_SIZE = 100
-LEARNING_LATE = 0.001
+LEARNING_LATE = 0.01
 ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 
 network = LayerNet(INNODES, HNODES, ONODES)
-optimizer = AdaGrad(lr = LEARNING_LATE)
+optimizer = SGD(lr = LEARNING_LATE)
 
-train_loss_list = []
-train_acc_list = []
-
-mndata = MNIST("/Users/daisuke/le4nn/mnist")
+mndata = MNIST("../data/mnist")
 x_train, t_train = mndata.load_training()
 x_train = np.array(x_train) # (60000, 784)
 t_train = np.array(t_train) # (60000,)

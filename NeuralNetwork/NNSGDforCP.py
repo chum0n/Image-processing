@@ -2,7 +2,10 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
-from LNforCP import LayerNet
+
+import sys, os
+sys.path.append(os.pardir)
+from LayerNet.LNforCP import LayerNet
 from common.optimizer import *
 
 INNODES_CH = 1
@@ -20,7 +23,7 @@ ITER_PER_EPOC = max(TEACH_NUM / BATCH_SIZE, 1)
 network = LayerNet(INNODES_CH, INNODES_H, INNODES_W, HNODES, ONODES)
 optimizer = SGD(lr = LEARNING_LATE)
 
-mndata = MNIST("/Users/daisuke/le4nn/mnist")
+mndata = MNIST("../data/mnist")
 x_train, t_train = mndata.load_training()
 x_train = np.array(x_train) # (60000, 784)
 x_train = x_train.reshape(x_train.shape[0], 1, 28, 28) # (60000, 1*28*28)
