@@ -2,6 +2,9 @@ import numpy as np
 from mnist import MNIST
 import matplotlib.pyplot as plt
 from pylab import cm
+
+import sys, os
+sys.path.append(os.pardir)
 from common.functions import sigmoid, softmax
 
 INNODES = 784
@@ -33,7 +36,7 @@ def forward(network, x):
 
     return y
 
-mndata = MNIST("/Users/daisuke/le4nn/mnist")
+mndata = MNIST("../data/mnist")
 x_test, t_test = mndata.load_testing()
 x_test = np.array(x_test)
 t_test = np.array(t_test)
