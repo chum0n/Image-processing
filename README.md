@@ -42,39 +42,39 @@ python で書かれたニューラルネットワーク用の API である Kera
 │   └── KerasforB2.py
 ├── LayerNet
 │   ├── LN.py
-│   ├── LNforBN.py
-│   ├── LNforCP.py
-│   ├── LNforConv.py
-│   ├── LNforDropout.py
-│   ├── LNforRelu.py
+│   ├── LNforBN.py                      // Batch Normalizationを使用
+│   ├── LNforCP.py                      // 畳み込み層・プーリング層を使用
+│   ├── LNforConv.py                    // 畳み込み層を使用
+│   ├── LNforDropout.py                 // Dropoutを使用
+│   ├── LNforRelu.py                    // Relu関数を使用
 │   └── SimpleConvNet.py
 ├── NeuralNetwork
-│   ├── NNAdaDelta.py
-│   ├── NNAdaGrad.py
-│   ├── NNAdam.py
-│   ├── NNMomentum.py
-│   ├── NNRMSProp.py
-│   ├── NNSGD.py
-│   ├── NNSGDRelu.py
-│   ├── NNSGDforBN.py
-│   ├── NNSGDforCP.py
-│   ├── NNSGDforConv.py
-│   ├── NNSGDforDropout.py
-│   ├── NNcolor.py
-│   ├── NNtestforcolor.py
-│   ├── NNtestformnist.py
-│   ├── networkWh.npy        // 学習にて得た重み
-│   ├── networkWo.npy        // 学習にて得た重み
-│   ├── networkbh.npy        // 学習にて得た重み
-│   ├── networkbo.npy        // 学習にて得た重み
-│   ├── sample_color.py      // cifar読み込み確認のためのサンプル
-│   └── sample_mnist.py               // mnist読み込み確認のためのサンプル
+│   ├── NNAdaDelta.py                   // 最適化手法にAdaDeltaを使用
+│   ├── NNAdaGrad.py                    // 最適化手法にAdaGradを使用
+│   ├── NNAdam.py                       // 最適化手法にAdamを使用
+│   ├── NNMomentum.py                   // 最適化手法に慣性項付きSGDを使用
+│   ├── NNRMSProp.py                    // 最適化手法にRMSPropを使用
+│   ├── NNSGD.py                        // 最適化手法にSGDを使用
+│   ├── NNSGDRelu.py                    // Relu関数を使用
+│   ├── NNSGDforBN.py                   // Batch Normalizationを使用
+│   ├── NNSGDforCP.py                   // 畳み込み層・プーリング層を使用
+│   ├── NNSGDforConv.py  　　　　　　　　　// 畳み込み層を使用
+│   ├── NNSGDforDropout.py              // Dropoutを使用
+│   ├── NNcolor.py                      // cifarデータに対する学習
+│   ├── NNtestforcolor.py               // cifarテストデータに対する正答率を求める
+│   ├── NNtestformnist.py               // mnistテストデータに対する正答率を求める
+│   ├── networkWh.npy                   // 学習にて得た重み
+│   ├── networkWo.npy                   // 学習にて得た重み
+│   ├── networkbh.npy                   // 学習にて得た重み
+│   ├── networkbo.npy                   // 学習にて得た重み
+│   ├── sample_color.py                 // cifar読み込み確認のためのサンプル
+│   └── sample_mnist.py                 // mnist読み込み確認のためのサンプル
 ├── README.md
 ├── common
-│   ├── functions.py         // 種々の関数
-│   ├── layers.py            // 種々の層
-│   ├── optimizer.py         // 種々の最適化手法
-│   └── util.py                       // 畳み込み層のための関数
+│   ├── functions.py                    // 種々の関数
+│   ├── layers.py                       // 種々の層
+│   ├── optimizer.py                    // 種々の最適化手法
+│   └── util.py                         // 畳み込み層のための関数
 ├── data
 │   ├── cifar-10-batches-py             // cifar画像データ
 │   │   ├── batches.meta
@@ -85,12 +85,12 @@ python で書かれたニューラルネットワーク用の API である Kera
 │   │   ├── data_batch_5
 │   │   ├── readme.html
 │   │   └── test_batch
-│   └── mnist                          // mnist画像データ
+│   └── mnist                           // mnist画像データ
 │       ├── t10k-images-idx3-ubyte
 │       ├── t10k-labels-idx1-ubyte
 │       ├── train-images-idx3-ubyte
 │       └── train-labels-idx1-ubyte
-└── practice                          
+└── practice                            
     ├── practice1.py
     └── practice2.py
 ```
