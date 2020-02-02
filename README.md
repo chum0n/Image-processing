@@ -63,20 +63,20 @@ python で書かれたニューラルネットワーク用の API である Kera
 │   ├── NNcolor.py
 │   ├── NNtestforcolor.py
 │   ├── NNtestformnist.py
-│   ├── networkWh.npy
-│   ├── networkWo.npy
-│   ├── networkbh.npy
-│   ├── networkbo.npy
-│   ├── sample_color.py
-│   └── sample_mnist.py
+│   ├── networkWh.npy        // 学習にて得た重み
+│   ├── networkWo.npy        // 学習にて得た重み
+│   ├── networkbh.npy        // 学習にて得た重み
+│   ├── networkbo.npy        // 学習にて得た重み
+│   ├── sample_color.py      // cifar読み込み確認のためのサンプル
+│   └── sample_mnist.py               // mnist読み込み確認のためのサンプル
 ├── README.md
 ├── common
-│   ├── functions.py
-│   ├── layers.py
-│   ├── optimizer.py
-│   └── util.py
+│   ├── functions.py         // 種々の関数
+│   ├── layers.py            // 種々の層
+│   ├── optimizer.py         // 種々の最適化手法
+│   └── util.py                       // 畳み込み層のための関数
 ├── data
-│   ├── cifar-10-batches-py
+│   ├── cifar-10-batches-py             // cifar画像データ
 │   │   ├── batches.meta
 │   │   ├── data_batch_1
 │   │   ├── data_batch_2
@@ -85,12 +85,12 @@ python で書かれたニューラルネットワーク用の API である Kera
 │   │   ├── data_batch_5
 │   │   ├── readme.html
 │   │   └── test_batch
-│   └── mnist
+│   └── mnist                          // mnist画像データ
 │       ├── t10k-images-idx3-ubyte
 │       ├── t10k-labels-idx1-ubyte
 │       ├── train-images-idx3-ubyte
 │       └── train-labels-idx1-ubyte
-└── practice
+└── practice                          
     ├── practice1.py
     └── practice2.py
 ```
