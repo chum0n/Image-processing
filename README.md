@@ -94,3 +94,5 @@ python で書かれたニューラルネットワーク用の API である Kera
     ├── practice1.py
     └── practice2.py
 ```
+
+参考文献はPerformance_evalution.pdfにてまとめています。
