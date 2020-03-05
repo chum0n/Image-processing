@@ -1,1 +1,15 @@
 report/
+
+cifar-10-python.tar
+
+.vscode/
+
+__pycache__/
+
+python/
+
+common/__pycache__/
+
+Keras/
+
+.DS_Store
